@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body class="min-h-screen bg-white text-woodsmoke-900">
+  <main class="mx-auto flex min-h-screen w-full max-w-[560px] items-center px-6 py-10">
+      <section class="w-full border border-silver-200 bg-white p-6 text-woodsmoke-900 sm:p-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.38em] text-silver-600">Founder Console</p>
+        <h1 class="mt-4 font-display text-4xl font-bold uppercase leading-none tracking-[0.04em] text-woodsmoke-900">
+          Sign In
+        </h1>
+
+        <% if (error) { %>
+          <div class="mt-6 rounded-md border border-[#f2b2b2] bg-[#fff3f3] px-4 py-3 text-sm font-medium text-[#8c1c1c]">
+            <%= error %>
+          </div>
+        <% } %>
+
+        <% if (usingFallbackAccessKey) { %>
+          <div class="mt-6 rounded-md border border-orchid-200 bg-orchid-50 px-4 py-4 text-sm leading-6 text-orchid-900">
+            The app is currently using the fallback local key:
+            <span class="font-bold"><%= fallbackAccessKey %></span>.
+            Add <code>ADMIN_ACCESS_KEY</code> to <code>.env</code> before production use.
+          </div>
+        <% } %>
+
+        <form action="/admin/login" method="post" class="mt-8 space-y-5">
+          <label class="block">
+            <span class="mb-2 block text-sm font-semibold text-woodsmoke-800">Admin passcode</span>
+            <input
+              type="password"
+              name="passcode"
+              required
+              class="w-full rounded-md border border-silver-200 bg-silver-50 px-4 py-3 text-base text-woodsmoke-900 placeholder:text-silver-500 focus:border-orchid-700 focus:bg-white focus:outline-none"
+              placeholder="Enter access key"
+            />
+          </label>
+
+          <button
+            type="submit"
+            class="inline-flex h-12 w-full items-center justify-center rounded-md bg-orchid-700 px-5 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:bg-orchid-600"
+          >
+            Unlock Dashboard
+          </button>
+        </form>
+      </section>
+  </main>
+</body>
+</html>

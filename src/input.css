@@ -1,0 +1,442 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-display: "Big Shoulders Display", sans-serif;
+  --text-xs: 0.694rem;
+  --text-xs--line-height: 1.45;
+  --text-sm: 0.833rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1.2rem;
+  --text-lg--line-height: 1.45;
+  --text-xl: 1.44rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.728rem;
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 2.074rem;
+  --text-3xl--line-height: 1.15;
+  --text-4xl: 2.488rem;
+  --text-4xl--line-height: 1.1;
+  --text-5xl: 2.986rem;
+  --text-5xl--line-height: 1.05;
+  --text-6xl: 3.583rem;
+  --text-6xl--line-height: 1.05;
+  --text-7xl: 4.3rem;
+  --text-7xl--line-height: 1;
+  --text-8xl: 5.16rem;
+  --text-8xl--line-height: 1;
+  --text-9xl: 6.192rem;
+  --text-9xl--line-height: 0.95;
+  --text-10xl: 7.43rem;
+  --text-10xl--line-height: 0.92;
+  --text-11xl: 8.916rem;
+  --text-11xl--line-height: 0.9;
+
+  --color-woodsmoke-50: #f6f6f6;
+  --color-woodsmoke-100: #e7e7e7;
+  --color-woodsmoke-200: #d1d1d1;
+  --color-woodsmoke-300: #b0b0b0;
+  --color-woodsmoke-400: #888888;
+  --color-woodsmoke-500: #6d6d6d;
+  --color-woodsmoke-600: #5d5d5d;
+  --color-woodsmoke-700: #4f4f4f;
+  --color-woodsmoke-800: #454545;
+  --color-woodsmoke-900: #3d3d3d;
+  --color-woodsmoke-950: #191919;
+
+  --color-silver-50: #f8f8f8;
+  --color-silver-100: #efefef;
+  --color-silver-200: #dcdcdc;
+  --color-silver-300: #bdbdbd;
+  --color-silver-400: #989898;
+  --color-silver-500: #7c7c7c;
+  --color-silver-600: #656565;
+  --color-silver-700: #525252;
+  --color-silver-800: #464646;
+  --color-silver-900: #3d3d3d;
+  --color-silver-950: #292929;
+
+  --color-orchid-50: #fdf6fd;
+  --color-orchid-100: #faecfb;
+  --color-orchid-200: #f3d8f6;
+  --color-orchid-300: #ecbaed;
+  --color-orchid-400: #e090e2;
+  --color-orchid-500: #d06bd2;
+  --color-orchid-600: #b346b3;
+  --color-orchid-700: #943792;
+  --color-orchid-800: #792f76;
+  --color-orchid-900: #642b61;
+  --color-orchid-950: #40123d;
+}
+
+@layer base {
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    @apply bg-white font-sans text-neutral-900 antialiased;
+  }
+}
+
+@layer components {
+  .site-nav-dropdown {
+    left: 50%;
+    width: min(1120px, calc(100vw - 2.5rem));
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(8px);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease,
+      visibility 160ms ease;
+  }
+
+  .site-nav-group:hover .site-nav-dropdown,
+  .site-nav-group:focus-within .site-nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .site-nav-group:hover .site-nav-trigger,
+  .site-nav-group:focus-within .site-nav-trigger {
+    color: var(--color-orchid-700);
+  }
+
+  .site-search-overlay[hidden] {
+    display: none;
+  }
+
+  .marquee-track {
+    animation: marquee-left 48s linear infinite;
+    will-change: transform;
+  }
+
+  .marquee-track-reverse {
+    animation-name: marquee-right;
+  }
+
+  .marquee-segment {
+    cursor: pointer;
+  }
+
+  .beings-search-shell {
+    box-shadow: inset 0 0 0 1px rgba(23, 23, 23, 0.03);
+  }
+
+  .beings-title {
+    text-wrap: balance;
+  }
+
+  .beings-description {
+    color: color-mix(in srgb, #171717 78%, white 22%);
+  }
+
+  .beings-description-fade {
+    position: relative;
+    max-height: calc(1.75em * 4);
+    overflow: hidden;
+  }
+
+  .beings-description-fade::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1.6em;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 88%);
+    pointer-events: none;
+  }
+
+  .beings-card {
+    background-image:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.02)),
+      url("/assets/z-image-turbo_00063_.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 0 12px 24px rgba(23, 23, 23, 0.08);
+  }
+
+  .beings-outline-name {
+    -webkit-text-stroke: 1.5px #bfbfbf;
+    text-stroke: 1.5px #bfbfbf;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-33.3333%, 0, 0);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translate3d(-33.3333%, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .marquee-track-reverse {
+    animation: none;
+  }
+}
+
+
+button{
+  cursor: pointer;
+}
+
+.hero-stage {
+  background-image: url("/assets/z-image-turbo_00078_.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.admin-sidebar-panel {
+  @apply flex h-full min-h-screen flex-col justify-between border-r border-silver-200 bg-white p-3;
+}
+
+.admin-side-link {
+  @apply flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-woodsmoke-800 transition hover:bg-silver-50 hover:text-woodsmoke-900;
+}
+
+.admin-side-link.is-active {
+  @apply bg-orchid-50 font-extrabold text-orchid-800;
+}
+
+.admin-side-link-icon {
+  @apply inline-flex h-4 w-4 shrink-0 items-center justify-center text-silver-600;
+}
+
+.admin-side-link.is-active .admin-side-link-icon {
+  @apply text-orchid-800;
+}
+
+.admin-side-link-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.admin-logout-button {
+  @apply inline-flex h-12 w-12 items-center justify-center bg-transparent text-orchid-600 transition hover:bg-orchid-50 hover:text-orchid-700;
+}
+
+.admin-logout-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.admin-page-header {
+  @apply text-woodsmoke-900;
+}
+
+.admin-page-header-category {
+  @apply text-xs font-semibold uppercase tracking-[0.38em] text-silver-600;
+}
+
+.admin-page-header-title {
+  @apply mt-3 font-display text-4xl font-bold uppercase leading-none tracking-[0.04em] text-woodsmoke-900;
+}
+
+.admin-page-header-description {
+  @apply mt-3 text-sm text-woodsmoke-700;
+}
+
+.admin-field {
+  @apply block;
+}
+
+.admin-field span {
+  @apply mb-1 block text-sm font-semibold text-woodsmoke-800;
+}
+
+.admin-field-note {
+  @apply mb-2 block text-xs leading-5 text-silver-600;
+}
+
+.admin-input {
+  @apply h-12 w-full border border-silver-200 bg-white px-3 text-base text-woodsmoke-900 placeholder:text-silver-500 focus:border-orchid-700 focus:outline-none;
+}
+
+.admin-filter-input {
+  @apply h-12 w-full bg-silver-100 px-3 text-sm text-woodsmoke-900 placeholder:text-silver-500 focus:outline-none;
+  border: 1px solid var(--color-silver-200);
+}
+
+.admin-filter-input:focus {
+  border-color: var(--color-silver-200);
+  background-color: var(--color-silver-100);
+}
+
+.admin-filter-select {
+  position: relative;
+}
+
+.admin-filter-select-trigger {
+  @apply flex h-12 w-full items-center justify-between gap-3 bg-silver-100 px-3 text-sm text-woodsmoke-900 focus:outline-none;
+  border: 1px solid var(--color-silver-200);
+}
+
+.admin-filter-select-trigger:focus {
+  border-color: var(--color-silver-200);
+  background-color: var(--color-silver-100);
+}
+
+.admin-filter-select-trigger svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-silver-700);
+  flex-shrink: 0;
+}
+
+.admin-filter-select-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  @apply bg-white p-1 shadow-2xl;
+  border: 1px solid var(--color-silver-200);
+}
+
+.admin-filter-select-option {
+  @apply flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-woodsmoke-800;
+}
+
+.admin-filter-select-option:hover {
+  background-color: var(--color-silver-50);
+}
+
+.admin-filter-select-option.is-selected {
+  background-color: var(--color-silver-50);
+  color: var(--color-woodsmoke-900);
+  font-weight: var(--font-weight-semibold);
+}
+
+.admin-filter-select-option svg {
+  width: 14px;
+  height: 14px;
+  color: var(--color-orchid-700);
+  flex-shrink: 0;
+}
+
+.admin-textarea {
+  @apply min-h-[120px] w-full border border-silver-200 bg-white px-3 py-3 text-base text-woodsmoke-900 placeholder:text-silver-500 focus:border-orchid-700 focus:outline-none;
+}
+
+.admin-primary-button {
+  @apply inline-flex h-12 items-center justify-center bg-orchid-700 px-5 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:bg-orchid-600;
+}
+
+.admin-table-head {
+  @apply hidden bg-silver-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-silver-600 md:grid md:grid-cols-4 md:gap-4;
+}
+
+.admin-table-head-wide {
+  @apply md:grid-cols-[minmax(0,1.2fr)_160px_140px_minmax(0,1fr)_80px];
+}
+
+.admin-table-row {
+  @apply grid gap-2 border-t border-silver-200 px-4 py-4 text-sm md:grid-cols-4 md:items-center md:gap-4;
+}
+
+.admin-table-row-wide {
+  @apply md:grid-cols-[minmax(0,1.2fr)_160px_140px_minmax(0,1fr)_80px];
+}
+
+.admin-checkcard {
+  @apply flex items-start gap-3 border border-silver-200 bg-white px-4 py-3 text-sm text-woodsmoke-900 transition hover:border-orchid-300;
+}
+
+.admin-checkcard input {
+  margin-top: 0.2rem;
+}
+
+.admin-checkcard span {
+  @apply flex flex-col gap-1;
+}
+
+.admin-checkcard small {
+  @apply text-xs uppercase tracking-[0.08em] text-silver-600;
+}
+
+.admin-workspace-grid {
+  @apply grid gap-4 xl:grid-cols-[minmax(0,1fr)_453px];
+}
+
+.admin-editor-rail {
+  @apply min-w-0;
+}
+
+.admin-editor-form {
+  @apply flex h-full min-h-[calc(100vh-2rem)] flex-col gap-5;
+}
+
+.admin-editor-panel {
+  @apply h-full border-l border-silver-200 bg-white pl-4 xl:sticky xl:top-4;
+}
+
+.admin-rail-input {
+  @apply h-12 w-full bg-silver-100 px-3 text-sm text-woodsmoke-900 placeholder:text-silver-500 focus:outline-none;
+  border: 1px solid var(--color-silver-200);
+}
+
+.admin-rail-input:focus {
+  border-color: var(--color-silver-200);
+  background-color: var(--color-silver-100);
+}
+
+.admin-rail-textarea {
+  @apply min-h-[120px] w-full bg-silver-100 px-3 py-3 text-sm text-woodsmoke-900 placeholder:text-silver-500 focus:outline-none;
+  border: 1px solid var(--color-silver-200);
+}
+
+.admin-rail-textarea:focus {
+  border-color: var(--color-silver-200);
+  background-color: var(--color-silver-100);
+}
+
+.admin-alert-card {
+  @apply flex items-start gap-3 border px-4 py-3 text-sm leading-6;
+}
+
+.admin-alert-card.is-info {
+  @apply border-[#cde6f6] bg-[#f3f9fd] text-[#174b6d];
+}
+
+.admin-alert-card.is-warn {
+  @apply border-[#f2ddb0] bg-[#fff7e6] text-[#825100];
+}
+
+.admin-alert-card.is-danger {
+  @apply border-[#efc2c2] bg-[#fff3f3] text-[#8c1c1c];
+}
+
+.admin-alert-dot {
+  @apply mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-current;
+}
+
+.admin-announcement-row {
+  @apply border border-silver-200 bg-white p-4 transition hover:border-orchid-300;
+}

@@ -1,0 +1,527 @@
+<%- include('partials/shell-start') %>
+
+<section class="bg-white p-4">
+  <div class="admin-workspace-grid">
+    <div class="space-y-4">
+      <div class="bg-white">
+        <%
+          const buildFilterSummary = function(selectedValues, optionsList, fallbackLabel) {
+            if (!selectedValues.length) {
+              return fallbackLabel;
+            }
+
+            const selectedLabels = optionsList
+              .filter(function(option) {
+                return option.value && selectedValues.includes(option.value);
+              })
+              .map(function(option) {
+                return option.label;
+              });
+
+            if (!selectedLabels.length) {
+              return fallbackLabel;
+            }
+
+            if (selectedLabels.length <= 2) {
+              return selectedLabels.join(', ');
+            }
+
+            return selectedLabels.length + ' selected';
+          };
+          const statusFilterOptions = [
+            { value: '', label: 'All statuses' }
+          ].concat(options.statuses.map(function(option) {
+            return { value: option, label: option };
+          }));
+          const placementFilterOptions = [
+            { value: '', label: 'All placements' }
+          ].concat(options.placements.map(function(option) {
+            return { value: option, label: option };
+          }));
+          const attentionFilterOptions = [
+            { value: '', label: 'All announcements' },
+            { value: 'attention', label: 'Needs attention' }
+          ];
+          const selectedStatusFilters = Array.isArray(currentFilters.status) ? currentFilters.status : [];
+          const selectedPlacementFilters = Array.isArray(currentFilters.placement) ? currentFilters.placement : [];
+          const selectedAttentionFilters = Array.isArray(currentFilters.attention) ? currentFilters.attention : [];
+          const selectedStatusLabel = buildFilterSummary(selectedStatusFilters, statusFilterOptions, 'All statuses');
+          const selectedPlacementLabel = buildFilterSummary(selectedPlacementFilters, placementFilterOptions, 'All placements');
+          const selectedAttentionLabel = buildFilterSummary(selectedAttentionFilters, attentionFilterOptions, 'All announcements');
+          const editorPlacementOptions = options.placements.map(function(option) {
+            return { value: option, label: option };
+          });
+          const editorStatusOptions = options.statuses.map(function(option) {
+            return { value: option, label: option };
+          });
+          const selectedEditorPlacement = editorPlacementOptions.find(function(option) {
+            return option.value === forms.announcement.placement;
+          }) || editorPlacementOptions[0];
+          const selectedEditorStatus = editorStatusOptions.find(function(option) {
+            return option.value === forms.announcement.status;
+          }) || editorStatusOptions[0];
+        %>
+        <form action="/admin/announcements" method="get" class="grid gap-3 xl:grid-cols-[minmax(0,1.4fr)_180px_180px_180px_auto]">
+          <label class="admin-field">
+            <input type="text" name="q" value="<%= currentFilters.q %>" placeholder="Title, message, CTA, or URL" class="admin-filter-input" />
+          </label>
+          <div class="admin-field admin-filter-select" data-custom-select data-select-mode="multiple">
+            <input type="hidden" name="status" value="<%= selectedStatusFilters.join(',') %>" data-custom-select-input />
+            <button type="button" class="admin-filter-select-trigger" aria-haspopup="listbox" aria-expanded="false" data-custom-select-trigger>
+              <span data-custom-select-label data-empty-label="All statuses"><%= selectedStatusLabel %></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </button>
+            <div class="admin-filter-select-menu" hidden data-custom-select-menu>
+              <% statusFilterOptions.forEach(function(option) { %>
+                <button
+                  type="button"
+                  class="admin-filter-select-option <%= option.value ? (selectedStatusFilters.includes(option.value) ? 'is-selected' : '') : (!selectedStatusFilters.length ? 'is-selected' : '') %>"
+                  data-custom-select-option
+                  data-value="<%= option.value %>"
+                  data-label="<%= option.label %>"
+                  <%= option.value ? '' : 'data-is-all-option="true"' %>
+                >
+                  <span><%= option.label %></span>
+                  <% if (option.value ? selectedStatusFilters.includes(option.value) : !selectedStatusFilters.length) { %>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="m5 12 5 5L20 7"></path>
+                    </svg>
+                  <% } %>
+                </button>
+              <% }) %>
+            </div>
+          </div>
+          <div class="admin-field admin-filter-select" data-custom-select data-select-mode="multiple">
+            <input type="hidden" name="placement" value="<%= selectedPlacementFilters.join(',') %>" data-custom-select-input />
+            <button type="button" class="admin-filter-select-trigger" aria-haspopup="listbox" aria-expanded="false" data-custom-select-trigger>
+              <span data-custom-select-label data-empty-label="All placements"><%= selectedPlacementLabel %></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </button>
+            <div class="admin-filter-select-menu" hidden data-custom-select-menu>
+              <% placementFilterOptions.forEach(function(option) { %>
+                <button
+                  type="button"
+                  class="admin-filter-select-option <%= option.value ? (selectedPlacementFilters.includes(option.value) ? 'is-selected' : '') : (!selectedPlacementFilters.length ? 'is-selected' : '') %>"
+                  data-custom-select-option
+                  data-value="<%= option.value %>"
+                  data-label="<%= option.label %>"
+                  <%= option.value ? '' : 'data-is-all-option="true"' %>
+                >
+                  <span><%= option.label %></span>
+                  <% if (option.value ? selectedPlacementFilters.includes(option.value) : !selectedPlacementFilters.length) { %>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="m5 12 5 5L20 7"></path>
+                    </svg>
+                  <% } %>
+                </button>
+              <% }) %>
+            </div>
+          </div>
+          <div class="admin-field admin-filter-select" data-custom-select data-select-mode="multiple">
+            <input type="hidden" name="attention" value="<%= selectedAttentionFilters.join(',') %>" data-custom-select-input />
+            <button type="button" class="admin-filter-select-trigger" aria-haspopup="listbox" aria-expanded="false" data-custom-select-trigger>
+              <span data-custom-select-label data-empty-label="All announcements"><%= selectedAttentionLabel %></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </button>
+            <div class="admin-filter-select-menu" hidden data-custom-select-menu>
+              <% attentionFilterOptions.forEach(function(option) { %>
+                <button
+                  type="button"
+                  class="admin-filter-select-option <%= option.value ? (selectedAttentionFilters.includes(option.value) ? 'is-selected' : '') : (!selectedAttentionFilters.length ? 'is-selected' : '') %>"
+                  data-custom-select-option
+                  data-value="<%= option.value %>"
+                  data-label="<%= option.label %>"
+                  <%= option.value ? '' : 'data-is-all-option="true"' %>
+                >
+                  <span><%= option.label %></span>
+                  <% if (option.value ? selectedAttentionFilters.includes(option.value) : !selectedAttentionFilters.length) { %>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="m5 12 5 5L20 7"></path>
+                    </svg>
+                  <% } %>
+                </button>
+              <% }) %>
+            </div>
+          </div>
+          <div class="flex items-end gap-3">
+            <button type="submit" class="admin-primary-button" style="text-transform: capitalize; letter-spacing: 0.04em;">Apply</button>
+            <a href="/admin/announcements" class="text-sm font-semibold text-orchid-700 underline">Reset</a>
+          </div>
+        </form>
+
+        <div class="mt-6 grid gap-4">
+          <% if (announcements.length) { %>
+            <% announcements.forEach(function(item) { %>
+              <article class="admin-announcement-row">
+                <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h4 class="text-lg font-semibold text-woodsmoke-900"><%= item.title %></h4>
+                      <span class="inline-flex rounded-md px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] <%= statusClasses[item.status] || statusClasses.draft %>"><%= item.status %></span>
+                      <span class="inline-flex rounded-md px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] <%= item.lifecycleTone %>"><%= item.lifecycleLabel %></span>
+                    </div>
+                    <p class="mt-3 max-w-3xl text-sm leading-6 text-woodsmoke-700"><%= item.message %></p>
+                    <div class="mt-4 grid gap-3 text-sm text-woodsmoke-700 md:grid-cols-2 xl:grid-cols-4">
+                      <p><span class="font-semibold text-woodsmoke-900">Placement:</span> <%= item.placementLabel %></p>
+                      <p><span class="font-semibold text-woodsmoke-900">Schedule:</span> <%= item.scheduleLabel %></p>
+                      <p><span class="font-semibold text-woodsmoke-900">Weight:</span> <%= item.weight %></p>
+                      <p><span class="font-semibold text-woodsmoke-900">Updated:</span> <%= item.updatedAtLabel %></p>
+                    </div>
+                    <div class="mt-3 grid gap-2 text-sm text-woodsmoke-700 md:grid-cols-2">
+                      <p><span class="font-semibold text-woodsmoke-900">CTA:</span> <%= item.anchorText || 'See more' %></p>
+                      <p class="truncate"><span class="font-semibold text-woodsmoke-900">Destination:</span> <%= item.linkUrl || 'No destination URL' %></p>
+                    </div>
+
+                    <% if (item.attention.length) { %>
+                      <div class="mt-4 flex flex-wrap gap-2">
+                        <% item.attention.forEach(function(flag) { %>
+                          <span class="inline-flex rounded-full bg-[#fff5dd] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#8a5a00]"><%= flag %></span>
+                        <% }) %>
+                      </div>
+                    <% } %>
+                  </div>
+
+                  <div class="flex shrink-0 items-center gap-3 lg:pl-4">
+                    <a
+                      href="/admin/announcements<%= filterQuery ? filterQuery + '&editAnnouncement=' + encodeURIComponent(item._id) : '?editAnnouncement=' + encodeURIComponent(item._id) %>#announcement-editor"
+                      class="text-sm font-semibold text-orchid-700 underline"
+                    >
+                      Edit
+                    </a>
+                  </div>
+                </div>
+              </article>
+            <% }) %>
+          <% } else { %>
+            <div class="border border-dashed border-silver-300 bg-silver-50 px-4 py-8 text-center">
+              <p class="text-lg font-semibold text-woodsmoke-900">No announcements match these filters.</p>
+              <p class="mt-2 text-sm text-woodsmoke-700">Try resetting the filters or create a fresh announcement from the editor rail.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <aside id="announcement-editor" class="admin-editor-rail">
+      <div class="admin-editor-panel">
+        <form action="/admin/announcements/save" method="post" class="admin-editor-form">
+          <input type="hidden" name="id" value="<%= forms.announcement.id %>" />
+
+          <div class="grid gap-4">
+            <label class="admin-field">
+              <span>Title</span>
+              <small class="admin-field-note">Internal headline for this announcement. Max 35 characters.</small>
+              <input type="text" name="title" required maxlength="35" value="<%= forms.announcement.title %>" placeholder="Title" aria-label="Title" class="admin-rail-input" data-preview-source="title" />
+            </label>
+            <label class="admin-field">
+              <span>Message</span>
+              <small class="admin-field-note">Primary copy people will read first. Max 124 characters.</small>
+              <textarea name="message" required maxlength="124" placeholder="Message" aria-label="Message" class="admin-rail-textarea min-h-[160px]" style="resize: none;" data-preview-source="message"><%= forms.announcement.message %></textarea>
+            </label>
+          </div>
+
+          <div class="grid gap-4">
+            <label class="admin-field">
+              <span>Call-to-action text</span>
+              <small class="admin-field-note">Short action label for the prompt. Max 15 characters.</small>
+              <input type="text" name="anchorText" maxlength="15" value="<%= forms.announcement.anchorText %>" placeholder="Call-to-action text" aria-label="Call-to-action text" class="admin-rail-input" data-preview-source="cta" />
+            </label>
+            <label class="admin-field">
+              <span>Destination URL</span>
+              <small class="admin-field-note">Where the announcement should send visitors.</small>
+              <input type="text" name="linkUrl" required value="<%= forms.announcement.linkUrl %>" placeholder="Destination URL" aria-label="Destination URL" class="admin-rail-input" />
+            </label>
+          </div>
+
+          <div class="grid gap-4">
+            <div class="admin-field admin-filter-select" data-custom-select data-select-mode="single">
+              <span>Placement</span>
+              <small class="admin-field-note">Choose where this message appears.</small>
+              <input type="hidden" name="placement" value="<%= selectedEditorPlacement.value %>" data-custom-select-input />
+              <button type="button" class="admin-filter-select-trigger" aria-haspopup="listbox" aria-expanded="false" data-custom-select-trigger>
+                <span data-custom-select-label data-empty-label="Placement"><%= selectedEditorPlacement.label %></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+              <div class="admin-filter-select-menu" hidden data-custom-select-menu>
+                <% editorPlacementOptions.forEach(function(option) { %>
+                  <button
+                    type="button"
+                    class="admin-filter-select-option <%= selectedEditorPlacement.value === option.value ? 'is-selected' : '' %>"
+                    data-custom-select-option
+                    data-value="<%= option.value %>"
+                    data-label="<%= option.label %>"
+                  >
+                    <span><%= option.label %></span>
+                    <% if (selectedEditorPlacement.value === option.value) { %>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="m5 12 5 5L20 7"></path>
+                      </svg>
+                    <% } %>
+                  </button>
+                <% }) %>
+              </div>
+            </div>
+            <div class="admin-field admin-filter-select" data-custom-select data-select-mode="single">
+              <span>Status</span>
+              <small class="admin-field-note">Control whether this is live, draft, or archived.</small>
+              <input type="hidden" name="status" value="<%= selectedEditorStatus.value %>" data-custom-select-input />
+              <button type="button" class="admin-filter-select-trigger" aria-haspopup="listbox" aria-expanded="false" data-custom-select-trigger>
+                <span data-custom-select-label data-empty-label="Status"><%= selectedEditorStatus.label %></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+              <div class="admin-filter-select-menu" hidden data-custom-select-menu>
+                <% editorStatusOptions.forEach(function(option) { %>
+                  <button
+                    type="button"
+                    class="admin-filter-select-option <%= selectedEditorStatus.value === option.value ? 'is-selected' : '' %>"
+                    data-custom-select-option
+                    data-value="<%= option.value %>"
+                    data-label="<%= option.label %>"
+                  >
+                    <span><%= option.label %></span>
+                    <% if (selectedEditorStatus.value === option.value) { %>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="m5 12 5 5L20 7"></path>
+                      </svg>
+                    <% } %>
+                  </button>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-4">
+            <label class="admin-field">
+              <span>Weight</span>
+              <small class="admin-field-note">Higher numbers win. Use whole numbers from -5 to 10.</small>
+              <input type="number" name="weight" value="<%= forms.announcement.weight %>" min="-5" max="10" step="1" placeholder="Weight" aria-label="Weight" class="admin-rail-input" />
+            </label>
+          </div>
+
+          <div class="grid gap-4">
+            <label class="admin-field">
+              <span>Starts at</span>
+              <small class="admin-field-note">Leave blank to start showing immediately.</small>
+              <input type="datetime-local" name="startsAt" value="<%= forms.announcement.startsAt %>" aria-label="Starts at" class="admin-rail-input" />
+            </label>
+            <label class="admin-field">
+              <span>Ends at</span>
+              <small class="admin-field-note">Leave blank if there is no scheduled end.</small>
+              <input type="datetime-local" name="endsAt" value="<%= forms.announcement.endsAt %>" aria-label="Ends at" class="admin-rail-input" />
+            </label>
+          </div>
+
+          <div class="mt-auto space-y-3 pt-4">
+            <div class="bg-silver-50 p-1">
+              <div class="overflow-hidden border border-woodsmoke-900 bg-woodsmoke-950 text-white">
+                <div class="flex items-center justify-between gap-4 px-3 py-3">
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold uppercase tracking-[0.14em] text-white/55" data-preview-target="title"><%= forms.announcement.title || 'Announcement title' %></p>
+                    <p class="mt-2 text-sm leading-6 text-white" data-preview-target="message"><%= forms.announcement.message || 'Your message preview will appear here as you compose the announcement.' %></p>
+                  </div>
+                  <span class="shrink-0 whitespace-nowrap text-xs font-bold uppercase tracking-[0.14em] text-white/70" data-preview-target="cta"><%= forms.announcement.anchorText || 'See more' %></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="submit" class="admin-primary-button" style="text-transform: capitalize; letter-spacing: 0.04em;"><%= forms.announcement.id ? 'Save changes' : 'Create announcement' %></button>
+              <a href="/admin/announcements<%= filterQuery %>" class="text-sm font-semibold text-orchid-700 underline">Reset</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const selects = Array.from(document.querySelectorAll('[data-custom-select]'));
+
+    const closeAll = function (except) {
+      selects.forEach(function (select) {
+        if (select === except) {
+          return;
+        }
+
+        const trigger = select.querySelector('[data-custom-select-trigger]');
+        const menu = select.querySelector('[data-custom-select-menu]');
+
+        if (menu) {
+          menu.hidden = true;
+        }
+
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    };
+
+    selects.forEach(function (select) {
+      const trigger = select.querySelector('[data-custom-select-trigger]');
+      const menu = select.querySelector('[data-custom-select-menu]');
+      const hiddenInput = select.querySelector('[data-custom-select-input]');
+      const label = select.querySelector('[data-custom-select-label]');
+      const options = Array.from(select.querySelectorAll('[data-custom-select-option]'));
+      const checkIconMarkup = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 5 5L20 7"></path></svg>';
+      const emptyLabel = label ? label.dataset.emptyLabel || 'All' : 'All';
+      const selectMode = select.dataset.selectMode === 'single' ? 'single' : 'multiple';
+
+      if (!trigger || !menu || !hiddenInput || !label) {
+        return;
+      }
+
+      const readSelectedValues = function () {
+        return [...new Set(hiddenInput.value
+          .split(',')
+          .map(function (item) {
+            return item.trim();
+          })
+          .filter(Boolean))];
+      };
+
+      const writeSelectedValues = function (values) {
+        hiddenInput.value = values.join(',');
+      };
+
+      const syncSummaryLabel = function (selectedValues) {
+        const selectedLabels = options
+          .filter(function (option) {
+            return option.dataset.value && selectedValues.includes(option.dataset.value);
+          })
+          .map(function (option) {
+            return option.dataset.label || '';
+          })
+          .filter(Boolean);
+
+        if (!selectedLabels.length) {
+          label.textContent = emptyLabel;
+          return;
+        }
+
+        label.textContent = selectedLabels.length <= 2 ? selectedLabels.join(', ') : selectedLabels.length + ' selected';
+      };
+
+      const syncOptionState = function (selectedValues) {
+        options.forEach(function (candidate) {
+          candidate.classList.remove('is-selected');
+          const existingIcon = candidate.querySelector('svg');
+
+          if (existingIcon) {
+            existingIcon.remove();
+          }
+
+          const isAllOption = !candidate.dataset.value;
+          const optionValue = candidate.dataset.value || '';
+          const isSelected = isAllOption ? !selectedValues.length : selectedValues.includes(optionValue);
+
+          if (isSelected) {
+            candidate.classList.add('is-selected');
+            candidate.insertAdjacentHTML('beforeend', checkIconMarkup);
+          }
+        });
+      };
+
+      trigger.addEventListener('click', function () {
+        const shouldOpen = menu.hidden;
+        closeAll(select);
+        menu.hidden = !shouldOpen;
+        trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      });
+
+      options.forEach(function (option) {
+        option.addEventListener('click', function () {
+          const isAllOption = !option.dataset.value;
+          const optionValue = option.dataset.value || '';
+          let selectedValues = readSelectedValues();
+
+          if (selectMode === 'single') {
+            selectedValues = optionValue ? [optionValue] : [];
+            writeSelectedValues(selectedValues);
+            syncSummaryLabel(selectedValues);
+            syncOptionState(selectedValues);
+            closeAll();
+            return;
+          }
+
+          if (isAllOption) {
+            selectedValues = [];
+          } else if (selectedValues.includes(optionValue)) {
+            selectedValues = selectedValues.filter(function (value) {
+              return value !== optionValue;
+            });
+          } else {
+            selectedValues = selectedValues.concat(optionValue);
+          }
+
+          selectedValues = [...new Set(selectedValues.filter(Boolean))];
+
+          writeSelectedValues(selectedValues);
+          syncSummaryLabel(selectedValues);
+          syncOptionState(selectedValues);
+        });
+      });
+
+      syncSummaryLabel(readSelectedValues());
+      syncOptionState(readSelectedValues());
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest('[data-custom-select]')) {
+        closeAll();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeAll();
+      }
+    });
+
+    const previewDefaults = {
+      title: 'Announcement title',
+      message: 'Your message preview will appear here as you compose the announcement.',
+      cta: 'See more'
+    };
+
+    const updatePreview = function (key, value) {
+      const target = document.querySelector('[data-preview-target="' + key + '"]');
+
+      if (!target) {
+        return;
+      }
+
+      const nextValue = (value || '').trim() || previewDefaults[key] || '';
+      target.textContent = nextValue;
+    };
+
+    document.querySelectorAll('[data-preview-source]').forEach(function (field) {
+      const key = field.dataset.previewSource;
+
+      if (!key) {
+        return;
+      }
+
+      const sync = function () {
+        updatePreview(key, field.value);
+      };
+
+      field.addEventListener('input', sync);
+      field.addEventListener('change', sync);
+      sync();
+    });
+  })();
+</script>
+
+<%- include('partials/shell-end') %>

@@ -1,0 +1,124 @@
+<%- include('partials/shell-start') %>
+
+<section class="border-b border-silver-200 bg-white p-4">
+  <%- include('partials/page-header', {
+    eyebrow: 'Founder Publishing',
+    titleText: 'Stories',
+    description: 'Manage founder-published seasons, episodes, and audio from a single surface.'
+  }) %>
+
+  <div class="mt-4 grid gap-0 border border-silver-200 xl:grid-cols-3">
+    <article class="border-b border-silver-200 p-4 xl:border-b-0 xl:border-r">
+      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-silver-600">Profiles</p>
+      <p class="mt-3 text-3xl font-bold text-woodsmoke-900"><%= personas.length %></p>
+    </article>
+    <article class="border-b border-silver-200 p-4 xl:border-b-0 xl:border-r">
+      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-silver-600">Seasons</p>
+      <p class="mt-3 text-3xl font-bold text-woodsmoke-900"><%= seasons.length %></p>
+    </article>
+    <article class="p-4">
+      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-silver-600">Episodes</p>
+      <p class="mt-3 text-3xl font-bold text-woodsmoke-900"><%= episodes.length %></p>
+    </article>
+  </div>
+</section>
+
+<section class="border-b border-silver-200 bg-white p-4">
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-silver-600">Seasons</p>
+      <h3 class="mt-2 font-display text-3xl font-bold uppercase leading-none tracking-[0.04em] text-woodsmoke-900">
+        <%= forms.season.id ? 'Edit Season' : 'Create Season' %>
+      </h3>
+    </div>
+    <% if (forms.season.id) { %>
+      <a href="/admin/stories" class="text-sm font-semibold text-orchid-700 underline">Clear edit mode</a>
+    <% } %>
+  </div>
+
+  <form action="/admin/seasons/save" method="post" class="mt-6 grid gap-4 md:grid-cols-2">
+    <input type="hidden" name="id" value="<%= forms.season.id %>" />
+    <label class="admin-field"><span>Title</span><input type="text" name="title" required value="<%= forms.season.title %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Season number</span><input type="number" min="1" name="seasonNumber" required value="<%= forms.season.seasonNumber %>" class="admin-input" /></label>
+    <label class="admin-field md:col-span-2"><span>String ID</span><input type="text" name="stringId" value="<%= forms.season.stringId %>" class="admin-input" /></label>
+    <label class="admin-field md:col-span-2"><span>Description</span><textarea name="description" class="admin-textarea"><%= forms.season.description %></textarea></label>
+    <label class="admin-field"><span>Starts at</span><input type="datetime-local" name="startsAt" value="<%= forms.season.startsAt %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Ends at</span><input type="datetime-local" name="endsAt" value="<%= forms.season.endsAt %>" class="admin-input" /></label>
+    <label class="admin-field md:col-span-2"><span>Status</span><select name="status" class="admin-input"><% options.statuses.forEach(function(option) { %><option value="<%= option %>" <%= forms.season.status === option ? 'selected' : '' %>><%= option %></option><% }) %></select></label>
+    <div class="md:col-span-2"><button type="submit" class="admin-primary-button"><%= forms.season.id ? 'Update season' : 'Create season' %></button></div>
+  </form>
+
+  <div class="mt-8 overflow-hidden border border-silver-200">
+    <div class="admin-table-head admin-table-head-wide">
+      <span>Title</span><span>Number</span><span>Status</span><span>Window</span><span></span>
+    </div>
+    <% seasons.forEach(function(item) { %>
+      <div class="admin-table-row admin-table-row-wide">
+        <span class="font-semibold text-woodsmoke-900"><%= item.title %></span>
+        <span class="text-woodsmoke-700"><%= item.seasonNumber %></span>
+        <span><span class="inline-flex rounded-md px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] <%= statusClasses[item.status] || statusClasses.draft %>"><%= item.status %></span></span>
+        <span class="text-woodsmoke-700"><%= item.startsAt ? new Date(item.startsAt).toLocaleDateString() : 'Unscheduled' %></span>
+        <span class="text-right"><a href="/admin/stories?editSeason=<%= item._id %>" class="text-sm font-semibold text-orchid-700 underline">Edit</a></span>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<section class="border-b border-silver-200 bg-white p-4">
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-silver-600">Episodes</p>
+      <h3 class="mt-2 font-display text-3xl font-bold uppercase leading-none tracking-[0.04em] text-woodsmoke-900">
+        <%= forms.episode.id ? 'Edit Episode' : 'Create Episode' %>
+      </h3>
+    </div>
+    <% if (forms.episode.id) { %>
+      <a href="/admin/stories" class="text-sm font-semibold text-orchid-700 underline">Clear edit mode</a>
+    <% } %>
+  </div>
+
+  <form action="/admin/episodes/save" method="post" class="mt-6 grid gap-4 md:grid-cols-2">
+    <input type="hidden" name="id" value="<%= forms.episode.id %>" />
+    <label class="admin-field"><span>Title</span><input type="text" name="title" required value="<%= forms.episode.title %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Season</span><select name="seasonId" required class="admin-input"><option value="">Select a season</option><% seasons.forEach(function(season) { %><option value="<%= season._id %>" <%= String(forms.episode.seasonId) === String(season._id) ? 'selected' : '' %>>Season <%= season.seasonNumber %>: <%= season.title %></option><% }) %></select></label>
+    <label class="admin-field"><span>String ID</span><input type="text" name="stringId" value="<%= forms.episode.stringId %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Slug</span><input type="text" name="slug" value="<%= forms.episode.slug %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Episode number</span><input type="number" min="1" name="episodeNumber" required value="<%= forms.episode.episodeNumber %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Cover image URL</span><input type="text" name="coverImageUrl" value="<%= forms.episode.coverImageUrl %>" class="admin-input" /></label>
+    <div class="admin-field md:col-span-2">
+      <span>Linked profiles</span>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <% personas.forEach(function(persona) { %>
+          <label class="admin-checkcard">
+            <input type="checkbox" name="personaIds" value="<%= persona._id %>" <%= forms.episode.personaIds.includes(String(persona._id)) ? 'checked' : '' %> />
+            <span><strong><%= persona.name %></strong><small><%= options.personaTypeLabels[persona.personaType] || persona.personaType %></small></span>
+          </label>
+        <% }) %>
+      </div>
+    </div>
+    <label class="admin-field md:col-span-2"><span>Synopsis</span><textarea name="synopsis" class="admin-textarea"><%= forms.episode.synopsis %></textarea></label>
+    <label class="admin-field md:col-span-2"><span>Story body</span><textarea name="storyBody" class="admin-textarea min-h-[220px]"><%= forms.episode.storyBody %></textarea></label>
+    <label class="admin-field"><span>Tease audio URL</span><input type="text" name="teaseAudioUrl" value="<%= forms.episode.teaseAudioUrl %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Audio duration (seconds)</span><input type="number" min="0" name="teaseAudioDurationSeconds" value="<%= forms.episode.teaseAudioDurationSeconds %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Published at</span><input type="datetime-local" name="publishedAt" value="<%= forms.episode.publishedAt %>" class="admin-input" /></label>
+    <label class="admin-field"><span>Status</span><select name="status" class="admin-input"><% options.statuses.forEach(function(option) { %><option value="<%= option %>" <%= forms.episode.status === option ? 'selected' : '' %>><%= option %></option><% }) %></select></label>
+    <div class="md:col-span-2"><button type="submit" class="admin-primary-button"><%= forms.episode.id ? 'Update episode' : 'Create episode' %></button></div>
+  </form>
+
+  <div class="mt-8 overflow-hidden border border-silver-200">
+    <div class="admin-table-head admin-table-head-wide">
+      <span>Episode</span><span>Season</span><span>Status</span><span>Profiles</span><span></span>
+    </div>
+    <% episodes.forEach(function(item) { %>
+      <div class="admin-table-row admin-table-row-wide">
+        <span class="font-semibold text-woodsmoke-900"><%= item.title %></span>
+        <span class="text-woodsmoke-700"><%= item.seasonId ? `S${item.seasonId.seasonNumber} ${item.seasonId.title}` : 'No season' %></span>
+        <span><span class="inline-flex rounded-md px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] <%= statusClasses[item.status] || statusClasses.draft %>"><%= item.status %></span></span>
+        <span class="text-woodsmoke-700"><%= (item.personaIds || []).map((persona) => persona.name).join(', ') %></span>
+        <span class="text-right"><a href="/admin/stories?editEpisode=<%= item._id %>" class="text-sm font-semibold text-orchid-700 underline">Edit</a></span>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/shell-end') %>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en" class="hide-scrollbar">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body class="hide-scrollbar">
+  <%
+    const bannerAnnouncements = Array.isArray(announcements) ? announcements : [];
+    const featuredFigureName = 'Michelle';
+    const profileStats = [
+      { emoji: '😍', value: 37283 },
+      { emoji: '🤩', value: 108097 },
+      { emoji: '🥺', value: 347982 }
+    ];
+    const comments = [
+      {
+        username: 'softglowdiary',
+        href: '/users/softglowdiary',
+        text: 'This episode felt so dreamy and intimate, I need the full story behind that last look.',
+        episode: 'Late Night Confession',
+        episodeHref: '/episodes/late-night-confession',
+        postedDate: 'May 12, 2026'
+      }
+    ];
+    const heroStats = [
+      { icon: 'eye', value: '76.1K' },
+      { icon: 'heart', value: '23.4K' },
+      { icon: 'list', value: '18' }
+    ];
+    const tags = ['PORTRAIT', 'BLACK WOMAN', 'TURQUOISE HAIR', 'SFW', 'SORORITY'];
+    const galleryCards = [
+      { meta: 'Season 1 &nbsp &bull; &nbsp  Ep 06', valueBadge: '120 TOKENS', title: 'Michelle: first glance', duration: '00:10', progressBars: 40, position: '18% center' },
+      { meta: 'Season 1 &nbsp &bull; &nbsp  Ep 07', valueBadge: '180 TOKENS', title: 'Late night confession', duration: '00:10', progressBars: 33, position: '36% center' },
+      { meta: 'Podcast &nbsp &bull; &nbsp  Drop 03', valueBadge: '90 TOKENS', title: 'Narration preview: soft focus', duration: '00:10', progressBars: 46, position: '58% center' },
+      { meta: 'CD Spotlight &nbsp &bull; &nbsp  Voice', valueBadge: 'OPEN', title: 'Studio session: after the party', duration: '00:10', progressBars: 37, position: '78% center' }
+    ];
+    const marqueeRows = [
+      ['IRMA', 'avatars', 'JANE', 'empty', 'SAVANNAH', 'empty', 'AUBREY', 'empty', 'COLLEEN', 'empty'],
+      ['avatars', 'JANE', 'empty', 'SAVANNAH', 'empty', 'IRMA', 'avatars', 'AUBREY', 'empty', 'COLLEEN', 'empty']
+    ];
+    const navConfig = {
+      wrapperClass: 'px-5 pt-0 sm:px-8 lg:px-12',
+      brand: {
+        href: '/',
+        titleText: 'stories By Shews'
+      },
+      primaryLinks: [
+        {
+          label: 'Stories',
+          href: '/stories',
+          children: [
+            { label: 'All Stories', href: '/stories' },
+            { label: 'Latest Episodes', href: '/stories/latest' },
+            { label: 'Founder Figures', href: '/stories/figures' }
+          ]
+        },
+        {
+          label: 'Podcast',
+          href: '/podcast',
+          children: [
+            { label: 'Latest Drops', href: '/podcast' },
+            { label: 'Narrated Stories', href: '/podcast/narrated-stories' },
+            { label: 'Voice Features', href: '/podcast/voice-features' }
+          ]
+        },
+        {
+          label: 'Creative Directors',
+          href: '/creative-directors',
+          description: 'Meet founder-approved creative directors across photography, video, and voice, then follow their rules for auditions and submissions.',
+          featureTitle: 'Explore Creative Directors',
+          featureBody: 'Browse public CD profiles, portfolio work, and the conditions attached to each audition pathway.',
+          children: [
+            { label: 'All Creative Directors', href: '/creative-directors' },
+            { label: 'Photo & Video CDs', href: '/creative-directors/photo-video' },
+            { label: 'Voice CDs', href: '/creative-directors/voice' }
+          ]
+        },
+        {
+          label: 'Applications',
+          href: '/apply',
+          children: [
+            { label: 'Become a CD', href: '/apply/creative-director' },
+            { label: 'Apply Through a CD', href: '/creative-directors' }
+          ]
+        },
+        { label: 'Blog', href: '/blog' }
+      ],
+      search: {
+        placeholder: 'Search stories, podcast drops, creative directors, or blog posts...'
+      },
+      actions: {
+        mobilePrimary: {
+          href: '/creative-directors',
+          label: 'Explore CDs'
+        },
+        link: {
+          href: '/signin',
+          label: 'Sign In/Sign Up',
+          className: 'text-woodsmoke-900 transition hover:text-orchid-700'
+        },
+        primary: {
+          href: '/creative-directors',
+          label: 'Explore creative directors',
+          className: 'inline-flex items-center justify-center rounded-full bg-orchid-700 px-5 py-3 text-sm font-bold tracking-[0.04em] text-white shadow-2xl transition hover:bg-orchid-600'
+        }
+      }
+    };
+    const hasMultipleAnnouncements = bannerAnnouncements.length > 1;
+    const renderMarqueeItem = function(item) {
+      if (item === 'avatars') {
+  %>
+        <div class="flex items-center gap-2">
+          <% for (let i = 0; i < 4; i++) { %>
+            <div class="h-12 w-12 rounded-[4px] bg-silver-300"></div>
+          <% } %>
+        </div>
+  <%
+      } else if (item === 'empty') {
+  %>
+        <div class="flex items-center gap-2">
+          <% for (let i = 0; i < 4; i++) { %>
+            <div class="h-12 w-12 rounded-[4px] bg-silver-200"></div>
+          <% } %>
+        </div>
+  <%
+      } else {
+  %>
+        <span class="font-display text-7xl font-bold uppercase leading-none tracking-[0.08em] text-white [text-shadow:-1px_0_0_#a3a3a3,0_1px_0_#a3a3a3,1px_0_0_#a3a3a3,0_-1px_0_#a3a3a3]"><%= item %></span>
+  <%
+      }
+    };
+  %>
+
+  <div
+    id="age-gate"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-woodsmoke-950/92 px-6 transition-opacity duration-500"
+    aria-modal="true"
+    role="dialog"
+  >
+    <div class="age-gate-panel relative w-full max-w-[680px] overflow-hidden rounded-2xl border border-white/10 px-8 py-10 text-center text-white shadow-2xl sm:px-12 sm:py-14">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(236,72,153,0.22),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))]"></div>
+      <div class="relative">
+        <p class="font-sans text-sm font-semibold uppercase tracking-[0.38em] text-white/70">Private Entry</p>
+        <h1 class="mt-5 font-display text-6xl font-extrabold uppercase leading-[0.9] tracking-[0.08em] sm:text-7xl">StoriesbyShews</h1>
+        <div class="mx-auto mt-6 h-px w-20 bg-white/35"></div>
+        <p class="mx-auto mt-8 max-w-[460px] text-lg leading-7 text-white/82">
+          This experience contains adult material and is intended only for visitors who are 18 years of age or older.
+        </p>
+        <p class="mt-4 text-lg font-semibold text-white">Are you 18+ and ready to enter?</p>
+
+        <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <button
+            type="button"
+            onclick="enterSite()"
+            class="inline-flex min-w-[180px] items-center justify-center rounded-md bg-orchid-700 px-7 py-3.5 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:bg-orchid-600"
+          >
+            Enter Site
+          </button>
+          <a
+            href="https://www.google.com"
+            class="inline-flex min-w-[180px] items-center justify-center rounded-md border border-white/20 px-7 py-3.5 text-sm font-bold uppercase tracking-[0.12em] text-white/80 transition hover:border-white/40 hover:text-white"
+          >
+            Exit
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="site-shell" class="min-h-screen bg-silver-50 pb-12">
+    <% if (bannerAnnouncements.length) { %>
+      <section class="border-b border-white/10 bg-woodsmoke-950 text-white" data-announcement-banner>
+        <div class="mx-auto flex max-w-[1880px] items-center justify-center gap-3 px-5 sm:px-8 lg:px-12">
+          <% if (hasMultipleAnnouncements) { %>
+            <button
+              type="button"
+              class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/85 transition sm:h-10 sm:w-10"
+              data-announcement-prev
+              aria-label="Show previous announcement"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.53 5.47a.75.75 0 0 1 0 1.06l-4.72 4.72H20a.75.75 0 0 1 0 1.5H5.81l4.72 4.72a.75.75 0 1 1-1.06 1.06l-6-6a.75.75 0 0 1 0-1.06l6-6a.75.75 0 0 1 1.06 0" clip-rule="evenodd"/></svg>
+            </button>
+          <% } %>
+
+          <% bannerAnnouncements.forEach(function(announcement, index) { %>
+            <a
+              href="<%= announcement.link %>"
+              class="flex min-h-14 w-full flex-1 items-center justify-center gap-3 py-3 text-center transition duration-200 <%= index === 0 ? 'translate-y-0 opacity-100' : '-translate-y-1.5 opacity-0' %> max-sm:min-h-[4.5rem] max-sm:flex-col max-sm:gap-1 max-sm:py-2"
+              data-announcement-item
+              <%= index === 0 ? '' : 'hidden' %>
+            >
+              <span class="text-[0.98rem] font-bold leading-[1.4] tracking-[0.01em]"><%= announcement.message %></span>
+              <span class="whitespace-nowrap text-[0.82rem] font-bold uppercase tracking-[0.14em] text-white/78"><%= announcement.cta || 'See more' %></span>
+            </a>
+          <% }) %>
+
+          <% if (hasMultipleAnnouncements) { %>
+            <button
+              type="button"
+              class="inline-flex h-9 w-9 shrink-0 items-center justify-center text-white/85 transition sm:h-10 sm:w-10"
+              data-announcement-next
+              aria-label="Show next announcement"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M13.47 5.47a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06l4.72-4.72H4a.75.75 0 0 1 0-1.5h14.19l-4.72-4.72a.75.75 0 0 1 0-1.06" clip-rule="evenodd"/></svg>
+            </button>
+          <% } %>
+        </div>
+      </section>
+    <% } %>
+
+    <%- include('partials/navbar', { navConfig: navConfig }) %>
+
+    <main class="px-6 pt-10 sm:px-8 lg:px-12">
+      <div class="mx-auto max-w-[1880px]">
+        <section>
+          <div class="flex flex-wrap items-end justify-between gap-5 lg:flex-nowrap">
+            <div class="flex items-end gap-5">
+              <div class="h-24 w-24 shrink-0 rounded-md bg-silver-300 sm:h-28 sm:w-28 xl:h-32 xl:w-32"></div>
+              <h1 class="beings-title font-display text-9xl font-extrabold uppercase leading-[0.82] tracking-[0.04em] text-woodsmoke-900 sm:text-10xl xl:text-11xl">
+                <%= featuredFigureName %>
+              </h1>
+            </div>
+
+            <div class="ml-auto self-end flex items-end gap-3">
+              <% ['chat', 'save', 'info'].forEach(function(icon) { %>
+                <button class="flex h-12 w-12 items-center justify-center rounded-md bg-silver-300 text-woodsmoke-900">
+                  <% if (icon === 'chat') { %>
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M8 10h8M8 14h5"></path>
+                      <path d="M7 19l-3 2v-4a8 8 0 118 8H7z"></path>
+                    </svg>
+                  <% } %>
+                  <% if (icon === 'save') { %>
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z"></path>
+                    </svg>
+                  <% } %>
+                  <% if (icon === 'info') { %>
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 10v6"></path>
+                      <path d="M12 7h.01"></path>
+                    </svg>
+                  <% } %>
+                </button>
+              <% }) %>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap items-center gap-5 text-base font-semibold text-woodsmoke-900 lg:flex-nowrap">
+            <div class="flex flex-wrap items-center gap-5">
+              <% profileStats.forEach(function(stat) { %>
+                <span class="inline-flex items-center gap-2">
+                  <span><%= stat.emoji %></span>
+                  <span><%= stat.value.toLocaleString() %></span>
+                </span>
+              <% }) %>
+            </div>
+
+            <% if (comments.length) { %>
+              <div class="flex min-w-0 flex-1 items-center gap-3 text-sm font-medium text-woodsmoke-800">
+                <span class="text-silver-500">•</span>
+                <% const featuredComment = comments[0]; %>
+                <div class="flex min-w-0 items-center gap-3 overflow-hidden whitespace-nowrap">
+                  <a
+                    href="<%= featuredComment.href %>"
+                    class="inline-flex shrink-0 rounded-md border border-orchid-700 bg-orchid-200 px-3 py-1 text-sm font-semibold text-orchid-800"
+                  >
+                    @<%= featuredComment.username %>
+                  </a>
+                  <span class="overflow-hidden text-ellipsis whitespace-nowrap">
+                    - <%= featuredComment.text %> - in
+                    <a href="<%= featuredComment.episodeHref || '#' %>" class="h-auto inline-flex flex-row items-center justify-center gap-1 text-orchid-800 underline">
+                      <span><%= featuredComment.episode %></span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" class="relative top-px shrink-0" aria-hidden="true">
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path fill="currentColor" d="M15.729 3.884c1.434-1.44 3.532-1.47 4.693-.304c1.164 1.168 1.133 3.28-.303 4.72l-2.423 2.433a.75.75 0 0 0 1.062 1.059l2.424-2.433c1.911-1.919 2.151-4.982.303-6.838c-1.85-1.857-4.907-1.615-6.82.304L9.819 7.692c-1.911 1.919-2.151 4.982-.303 6.837a.75.75 0 1 0 1.063-1.058c-1.164-1.168-1.132-3.28.303-4.72z" />
+                        <path fill="currentColor" d="M14.485 9.47a.75.75 0 0 0-1.063 1.06c1.164 1.168 1.133 3.279-.303 4.72l-4.847 4.866c-1.435 1.44-3.533 1.47-4.694.304c-1.164-1.168-1.132-3.28.303-4.72l2.424-2.433a.75.75 0 0 0-1.063-1.059l-2.424 2.433c-1.911 1.92-2.151 4.982-.303 6.838c1.85 1.858 4.907 1.615 6.82-.304l4.847-4.867c1.911-1.918 2.151-4.982.303-6.837" />
+                      </svg>
+                    </a>,
+                    on <%= featuredComment.postedDate %>
+                  </span>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </section>
+
+        <section class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <% galleryCards.forEach(function(card) { %>
+              <article class="flex flex-col gap-4">
+                <div class="beings-card relative overflow-hidden rounded-[4px]" style="background-position: <%= card.position %>; aspect-ratio: 1 / 1;">
+                  <div class="absolute inset-x-0 top-0 z-10 flex flex-wrap justify-start gap-2 p-4">
+                    <span class="inline-flex bg-silver-50/90 px-3 py-1 text-sm font-semibold text-woodsmoke-700"><%- card.meta %></span>
+                    <span class="inline-flex bg-[#ffe2c4] px-3 py-1 text-sm font-semibold text-[#a14a00]"><%= card.valueBadge %></span>
+                  </div>
+                  <div class="h-full w-full bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(0,0,0,0.05))]"></div>
+                </div>
+                <h2 class="font-display text-2xl font-bold text-woodsmoke-900 normal-case" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= card.title %></h2>
+
+              <div class="flex min-w-0 items-center gap-4 text-woodsmoke-700">
+                <button class="inline-flex h-8 w-8 shrink-0 items-center justify-center">
+                  <svg class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M6 4.75a.75.75 0 011.14-.64l7 4.25a.75.75 0 010 1.28l-7 4.25A.75.75 0 016 13.25v-8.5z"></path>
+                  </svg>
+                </button>
+
+                <div class="flex min-w-0 flex-1 items-center gap-[3px] overflow-hidden">
+                  <% for (let i = 0; i < 60; i++) { %>
+                    <span
+                      class="inline-block h-auto w-[4px] shrink-0 rounded-full <%= i < card.progressBars ? 'bg-orchid-700' : 'bg-orchid-200' %>"
+                      style="height: <%= 6 + ((i * 5) % 12) %>px;"
+                    ></span>
+                  <% } %>
+                </div>
+
+                <span class="shrink-0 text-sm font-bold text-woodsmoke-900"><%= card.duration %></span>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-4 text-sm text-woodsmoke-700">
+                <div class="flex flex-wrap items-center gap-5">
+                  <span class="inline-flex items-center">1 day ago</span>
+                  <% heroStats.forEach(function(stat) { %>
+                    <span class="inline-flex items-center gap-1.5">
+                      <% if (stat.icon === 'eye') { %>
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                          <path d="M2 12s3.6-6 10-6s10 6 10 6s-3.6 6-10 6S2 12 2 12z"></path>
+                          <circle cx="12" cy="12" r="2.8"></circle>
+                        </svg>
+                      <% } %>
+                      <% if (stat.icon === 'heart') { %>
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"></path>
+                        </svg>
+                      <% } %>
+                      <% if (stat.icon === 'list') { %>
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                          <path d="M9 7h11"></path>
+                          <path d="M9 12h11"></path>
+                          <path d="M9 17h11"></path>
+                          <path d="M4 7h.01"></path>
+                          <path d="M4 12h.01"></path>
+                          <path d="M4 17h.01"></path>
+                        </svg>
+                      <% } %>
+                      <span><%= stat.value %></span>
+                    </span>
+                  <% }) %>
+                </div>
+
+                <button class="inline-flex items-center text-woodsmoke-800">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <% tags.forEach(function(tag) { %>
+                  <span class="inline-flex bg-orchid-200 px-2 py-1 text-xs font-bold uppercase tracking-[0.04em] text-woodsmoke-800"><%= tag %></span>
+                <% }) %>
+              </div>
+            </article>
+          <% }) %>
+        </section>
+
+        <section class="pt-10">
+          <div class="overflow-hidden">
+            <div class="flex w-full flex-col gap-3">
+              <% marqueeRows.forEach(function(row, rowIndex) { %>
+                <div class="overflow-hidden py-1">
+                  <div class="<%= rowIndex === 0 ? 'marquee-track' : 'marquee-track marquee-track-reverse' %> flex w-max items-center gap-3">
+                    <% for (let repeat = 0; repeat < 3; repeat++) { %>
+                      <a href="/creative-directors" class="marquee-segment flex shrink-0 items-center gap-3 pr-3">
+                        <% row.forEach(function(item) { %>
+                          <% renderMarqueeItem(item); %>
+                        <% }) %>
+                      </a>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="h-screen"></div>
+    </main>
+  </div>
+
+  <script>
+    const ageGate = document.getElementById('age-gate');
+    const siteShell = document.getElementById('site-shell');
+    const announcementBanner = document.querySelector('[data-announcement-banner]');
+    const announcementItems = Array.from(document.querySelectorAll('[data-announcement-item]'));
+    const previousAnnouncementButton = document.querySelector('[data-announcement-prev]');
+    const nextAnnouncementButton = document.querySelector('[data-announcement-next]');
+    const marqueeTracks = Array.from(document.querySelectorAll('.marquee-track'));
+    let currentAnnouncementIndex = 0;
+    let announcementRotationInterval = null;
+    let isAnnouncementPaused = false;
+
+    function showAnnouncement(index) {
+      if (!announcementItems.length) {
+        return;
+      }
+
+      announcementItems[currentAnnouncementIndex].classList.remove('is-active');
+      announcementItems[currentAnnouncementIndex].classList.remove('opacity-100', 'translate-y-0');
+      announcementItems[currentAnnouncementIndex].classList.add('opacity-0', '-translate-y-1.5');
+      announcementItems[currentAnnouncementIndex].hidden = true;
+
+      currentAnnouncementIndex = (index + announcementItems.length) % announcementItems.length;
+
+      const nextItem = announcementItems[currentAnnouncementIndex];
+      nextItem.hidden = false;
+
+      window.requestAnimationFrame(() => {
+        nextItem.classList.remove('opacity-0', '-translate-y-1.5');
+        nextItem.classList.add('opacity-100', 'translate-y-0');
+      });
+    }
+
+    function rotateAnnouncement(step) {
+      showAnnouncement(currentAnnouncementIndex + step);
+    }
+
+    function stopAnnouncementRotation() {
+      if (announcementRotationInterval) {
+        window.clearInterval(announcementRotationInterval);
+        announcementRotationInterval = null;
+      }
+    }
+
+    function startAnnouncementRotation() {
+      if (announcementItems.length <= 1 || isAnnouncementPaused || announcementRotationInterval) {
+        return;
+      }
+
+      announcementRotationInterval = window.setInterval(() => {
+        rotateAnnouncement(1);
+      }, 6000);
+    }
+
+    function pauseAnnouncements() {
+      isAnnouncementPaused = true;
+      stopAnnouncementRotation();
+    }
+
+    function resumeAnnouncements() {
+      isAnnouncementPaused = false;
+      startAnnouncementRotation();
+    }
+
+    function setMarqueePaused(track, shouldPause) {
+      track.getAnimations().forEach((animation) => {
+        if (shouldPause) {
+          animation.pause();
+        } else {
+          animation.play();
+        }
+      });
+    }
+
+    function revealSite() {
+      ageGate.classList.add('pointer-events-none', 'opacity-0');
+      siteShell.classList.remove('overflow-hidden', 'h-screen');
+
+      window.setTimeout(() => {
+        ageGate.classList.add('hidden');
+      }, 500);
+    }
+
+    function enterSite() {
+      localStorage.setItem('storiesbyshews_age_verified', 'true');
+      revealSite();
+    }
+
+    if (localStorage.getItem('storiesbyshews_age_verified') === 'true') {
+      revealSite();
+    } else {
+      siteShell.classList.add('overflow-hidden', 'h-screen');
+    }
+
+    if (announcementItems.length > 1) {
+      startAnnouncementRotation();
+
+      if (announcementBanner) {
+        announcementBanner.addEventListener('mouseenter', pauseAnnouncements);
+        announcementBanner.addEventListener('mouseleave', resumeAnnouncements);
+      }
+
+      if (previousAnnouncementButton) {
+        previousAnnouncementButton.addEventListener('click', () => {
+          pauseAnnouncements();
+          rotateAnnouncement(-1);
+        });
+      }
+
+      if (nextAnnouncementButton) {
+        nextAnnouncementButton.addEventListener('click', () => {
+          pauseAnnouncements();
+          rotateAnnouncement(1);
+        });
+      }
+    }
+
+    marqueeTracks.forEach((track) => {
+      track.addEventListener('mouseenter', () => {
+        setMarqueePaused(track, true);
+      });
+
+      track.addEventListener('mouseleave', () => {
+        setMarqueePaused(track, false);
+      });
+
+      track.addEventListener('focusin', () => {
+        setMarqueePaused(track, true);
+      });
+
+      track.addEventListener('focusout', (event) => {
+        if (!track.contains(event.relatedTarget)) {
+          setMarqueePaused(track, false);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
